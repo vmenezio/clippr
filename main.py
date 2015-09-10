@@ -1,4 +1,4 @@
-#					[ clipper ]						#
+#					 [ clipper ]					#
 #													#
 # Hey, welcome to clipper! This is a small tool I	#
 # have been building for personal use as a means	#
@@ -13,8 +13,12 @@
 #													#
 #	- Vinícius Menézio								#
 
+import sys
+import os
 import hex3
 import colorsys
+import requests
+import imgurpython
 import imgurUploader as imgur
 import tuppleTools as tup
 from PIL import ImageGrab
@@ -22,23 +26,48 @@ from PIL import ImageGrab
 # trying to grab a bitmap from the clipboard, exits if it fails
 im = ImageGrab.grabclipboard()
 if ( im is None ):
-	print("\nno image found in the clipboard!")
+	print("\nNo image found in the clipboard!")
 	exit()
 	
 # retrieving basic data about the image and saving a temporary local copy
 totalPixels = im.width*im.height;
 colorList = sorted(im.getcolors(), reverse=True)
 im.save("out/temp.png")
+imageLocalFilesize = str(os.path.getsize("out/temp.png")/1000)+" KB"
+
+# setting default values for online image data, in case the upload fails
+imageURL = "[upload failed]"
+imageOnlineFilesize = "N/A"
 
 # starting a session with imgur's API and uploading the image anonimously
-client = imgur.startClient()
-img_ur = imgur.uploadImage( client, "out/temp.png" )
+try:
+	client = imgur.startClient()
+	try:
+		img_ur = imgur.uploadImage( client, "out/temp.png" )
+		imageURL = img_ur["url"]
+		imageOnlineFilesize = str(img_ur["filesize"]/1000)+" KB"
+	except FileNotFoundError as e:
+		print("\nCan't find image to upload. Please check whther file out/temp.png has been deleted.")
+	except requests.exceptions.ConnectionError as e:
+		print("\nCan't upload file to server. Please check your connection.")
+	except imgurpython.helpers.error.ImgurClientError as e:
+		print("\nCan't validade client's key/secret combination. Please check your credentials.")
+	except Exception as e:
+		print("\nUnexpected error while uploading:", sys.exc_info()[0])
+		print(e)
+		exit()
+except requests.exceptions.ConnectionError as e:
+	print("\nCan't communicate with server. Please check your connection.")
+except Exception as e:
+	print("\nUnexpected error while connecting:", sys.exc_info()[0])
+	print(e)
+
 
 # printing relevant image info
-print("\ndimensions: "+str(im.width)+" x "+str(im.height)+" px")
-print("filesize: "+str(img_ur["filesize"]/1000)+" KB | colors: "+str(len(colorList))+"\n")
+print("\ndimensions: "+str(im.width)+" x "+str(im.height)+" px | colors: "+str(len(colorList)))
+print("filesize: LOCAL "+imageLocalFilesize+", ONLINE "+imageOnlineFilesize+"\n" )
 
-print("url: "+str(img_ur["url"])+"\n")
+print("url: "+imageURL+"\n")
 	
 print("  USAGE  |   HEX    |        RGB        |        HSV")
 print("---------+----------+-------------------+-------------------")
