@@ -31,7 +31,11 @@ if ( im is None ):
 	
 # retrieving basic data about the image and saving a temporary local copy
 totalPixels = im.width*im.height;
-colorList = sorted(im.getcolors(), reverse=True)
+colorCount = "N/A"
+colorList = im.getcolors(32)
+if ( colorList is not None ):
+	colorList.sort(reverse=True)
+	colorCount = str(len(colorList))
 im.save("out/temp.png")
 imageLocalFilesize = str(os.path.getsize("out/temp.png")/1000)+" KB"
 
@@ -64,23 +68,26 @@ except Exception as e:
 
 
 # printing relevant image info
-print("\ndimensions: "+str(im.width)+" x "+str(im.height)+" px | colors: "+str(len(colorList)))
+print("\ndimensions: "+str(im.width)+" x "+str(im.height)+" px | colors: "+colorCount)
 print("filesize: LOCAL "+imageLocalFilesize+", ONLINE "+imageOnlineFilesize+"\n" )
 
 print("url: "+imageURL+"\n")
 	
-print("  USAGE  |   HEX    |        RGB        |        HSV")
-print("---------+----------+-------------------+-------------------")
-for color in colorList:
-	coloredPixels = color[0]
-	usage = 100 * coloredPixels/totalPixels
-	if ( usage <= 0.05 ):
-		usageStr = " < 0.1 %"
-	else:
-		usageStr = (str( round( usage, 1 ) )+" %").rjust(8)
-	rgbTuple = color[1]
-	rgbStr = tup.tuplePad( rgbTuple )
-	hsvTuple = tup.hsvToInteger( colorsys.rgb_to_hsv ( *tup.rgbToDecimal( rgbTuple ) ) )
-	hsvStr = tup.tuplePad( hsvTuple )
-	hexValue = hex3.toHex( *color[1] )
-	print( usageStr +" | " + hexValue + " | " + rgbStr + " | " + hsvStr )
+if (colorList is None):
+	print("Color count limit (32) exceeded. Could not retrieve palette data.")
+else:
+	print("  USAGE  |   HEX    |        RGB        |        HSV")
+	print("---------+----------+-------------------+-------------------")
+	for color in colorList:
+		coloredPixels = color[0]
+		usage = 100 * coloredPixels/totalPixels
+		if ( usage <= 0.05 ):
+			usageStr = " < 0.1 %"
+		else:
+			usageStr = (str( round( usage, 1 ) )+" %").rjust(8)
+		rgbTuple = color[1]
+		rgbStr = tup.tuplePad( rgbTuple )
+		hsvTuple = tup.hsvToInteger( colorsys.rgb_to_hsv ( *tup.rgbToDecimal( rgbTuple ) ) )
+		hsvStr = tup.tuplePad( hsvTuple )
+		hexValue = hex3.toHex( *color[1] )
+		print( usageStr +" | " + hexValue + " | " + rgbStr + " | " + hsvStr )
