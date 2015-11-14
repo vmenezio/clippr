@@ -1,3 +1,6 @@
+#! python3
+# -*- coding: utf-8 -*-
+
 # Some functions to make integration with imgur's	#
 # API nice and easy. Nothing too fancy.				#
 #													#

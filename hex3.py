@@ -1,3 +1,6 @@
+#! python3
+# -*- coding: utf-8 -*-
+
 # Small utility to help convert RGB tuples into	#
 # hex triplets and vice-versa.					#
 #												#

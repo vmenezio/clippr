@@ -1,3 +1,6 @@
+#! python3
+# -*- coding: utf-8 -*-
+
 # Collection of tupple operations to help dealing	#
 # with colorsys weirdnesses while keeping main.py	#
 # as clean as possible.								#

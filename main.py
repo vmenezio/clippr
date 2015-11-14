@@ -1,3 +1,6 @@
+#! python3
+# -*- coding: utf-8 -*-
+
 #					 [ clipper ]					#
 #													#
 # Hey, welcome to clipper! This is a small tool I	#
@@ -17,11 +20,12 @@ import sys
 import os
 import hex3
 import colorsys
-import requests
-import imgurpython
 import imgurUploader as imgur
 import tuppleTools as tup
 from PIL import ImageGrab
+
+from requests.exceptions import ConnectionError
+from imgurpython.helpers.error import ImgurClientError
 
 # trying to grab a bitmap from the clipboard, exits if it fails
 im = ImageGrab.grabclipboard()
@@ -50,11 +54,11 @@ try:
 		img_ur = imgur.uploadImage( client, "out/temp.png" )
 		imageURL = img_ur["url"]
 		imageOnlineFilesize = str(img_ur["filesize"]/1000)+" KB"
-	except FileNotFoundError as e:
+	except FileNotFoundError:
 		print("\nCan't find image to upload. Please check whther file out/temp.png has been deleted.")
-	except requests.exceptions.ConnectionError as e:
+	except ConnectionError:
 		print("\nCan't upload file to server. Please check your connection.")
-	except imgurpython.helpers.error.ImgurClientError as e:
+	except ImgurClientError:
 		print("\nCan't validade client's key/secret combination. Please check your credentials.")
 	except Exception as e:
 		print("\nUnexpected error while uploading:", sys.exc_info()[0])
