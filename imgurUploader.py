@@ -9,10 +9,7 @@
 from imgurpython import ImgurClient
 
 def startClient():
-    with open("acc.txt") as acc:
-        id, secret = acc.read().splitlines()
-
-    return ImgurClient(id, secret)
+    return ImgurClient("63ee41f27565802", None)
     
 def uploadImage( client, imagePath ):
     imageMeta = client.upload_from_path( imagePath )
