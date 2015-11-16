@@ -19,9 +19,9 @@
 import sys
 import os
 
-from . import hex3
-from . import imgurUploader as imgur
-from . import tuppleTools as tup
+from .helper import hex3
+from .helper import imgurUploader as imgur
+from .helper import tuppleTools as tup
 
 import colorsys
 from PIL import ImageGrab
