@@ -6,15 +6,11 @@
 #                                               #
 #   - Vinícius Menézio                          #
 
-def toHex( r, g, b ):
+def toHex( r, g, b, prefix="0x" ):
     hexR = hex(r)[2:].zfill(2)
     hexG = hex(g)[2:].zfill(2)
     hexB = hex(b)[2:].zfill(2)
-    hexValue = "0x" + hexR + hexG +hexB
-    return hexValue
-
-def toHexHash( r, g, b ):
-    hexValue = "#" + toHex( r, g, b )[2:]
+    hexValue = prefix + hexR + hexG +hexB
     return hexValue
     
 def toRGB( hex ):
